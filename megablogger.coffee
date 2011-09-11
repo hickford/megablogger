@@ -8,7 +8,7 @@ mb = zappa.run port, ->
     def io:io
 
     mongoose = require('mongoose')
-    mongoose.connect('mongodb://localhost/mb')  # maybe?
+    mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mb')  # maybe?
     def quip: mongoose.model('Post',
         new mongoose.Schema({
             text : String,
