@@ -6,6 +6,7 @@ mb = zappa.run port, ->
     #enable 'serve jquery'
     use 'bodyParser'        # for HTTP post 
     def io:io
+    validator = require('validator')
 
     mongoose = require('mongoose')
     mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mb')  # maybe?
@@ -15,7 +16,6 @@ mb = zappa.run port, ->
             date : Date
         })
     )
-
 
     get '/': -> 
         @scripts = ['/zappa/zappa', '/socket.io/socket.io', '/mega', '/zappa/jquery']
@@ -27,10 +27,15 @@ mb = zappa.run port, ->
 
     post '/': ->
         if @text
-            p = new quip({text: @text, date: new Date})
+            p = new quip({text: validator.sanitize(@text).entityEncode(), date: new Date})
             p.save()
             io.sockets.emit('post',{post: p})
         redirect '/'   # get
+
+    view 'posts': ->
+        ul id:'posts', ->
+            for post in @posts
+                partial 'post', post: post
 
     view 'post' : ->
         li -> @post.text
@@ -45,10 +50,7 @@ mb = zappa.run port, ->
         h1 @title
         partial 'new'
         h2 'Recent posts'
-        ul id:'posts', ->
-            for p in @posts
-                partial 'post', post: p
-
+        partial 'posts'
     client '/mega.js': ->
         connect()
         at post: ->
