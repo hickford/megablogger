@@ -2,7 +2,7 @@
   "name": "megablogger",
   "version": "0.0.1",
   "dependencies": {
-    "zappa" : "0.2.0",
+    "zappa" : "0.3.1",
     "coffee-script": "1.1.2",
     "mongoose" : "2.1.2",
     "validator": "0.3.0"
