@@ -18,17 +18,18 @@ mb = zappa.run port, ->
 
     @get '/': -> 
         scripts = ['/zappa/zappa', '/socket.io/socket.io', '/mega', '/zappa/jquery']
-        console.log(@params)
+        #console.log(@query)
         quip.find( {}, {}, {limit:20, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
             @render 'index': {posts, scripts}
         )
 
     @post '/': ->
-        if @params.text
-            p = new quip({text: validator.sanitize(@params.text).entityEncode(), date: new Date})
+        console.log(@body)
+        text = @body.text
+        if text
+            p = new quip({text: validator.sanitize(text).entityEncode(), date: new Date})
             p.save()
-            @io.sockets.emit('post',{post: p})
-        console.log(@params)
+            #@io.sockets.emit('post',{post: p})
         @redirect '/'   
 
     @view 'posts': ->
