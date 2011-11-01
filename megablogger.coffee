@@ -1,13 +1,15 @@
-zappa = require('zappa')
+zappa = require 'zappa'
 port = process.env.PORT || 5000	# 5000 for consistency with foreman's default
 
 mb = zappa.run port, ->
     @enable 'default layout'     # html, head, body, etc
     @enable 'serve jquery'
     @use 'bodyParser'        # for HTTP post 
-    validator = require('validator')
+    @use 'zappa'
+    validator = require 'validator'
 
-    mongoose = require('mongoose')
+    mongoose = require 'mongoose'
+    io = @io
     mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mb')  # maybe?
     quip = mongoose.model('Post',
         new mongoose.Schema({
@@ -17,19 +19,19 @@ mb = zappa.run port, ->
     )
 
     @get '/': -> 
-        scripts = ['/zappa/zappa', '/socket.io/socket.io', '/mega', '/zappa/jquery']
+        scripts = [ '/socket.io/socket.io', '/zappa/jquery', '/zappa/zappa', '/index']
         #console.log(@query)
         quip.find( {}, {}, {limit:20, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
             @render 'index': {posts, scripts}
         )
 
     @post '/': ->
-        console.log(@body)
         text = @body.text
         if text
-            p = new quip({text: validator.sanitize(text).entityEncode(), date: new Date})
-            p.save()
-            #@io.sockets.emit('post',{post: p})
+            post = new quip({text: validator.sanitize(text).entityEncode(), date: new Date})
+            post.save()
+            console.log post
+            io.sockets.emit 'post',post
         @redirect '/'   
 
     @view 'posts': ->
@@ -52,10 +54,11 @@ mb = zappa.run port, ->
         h2 'Recent posts'
         partial 'posts'
 
-    @client '/mega.js': ->
-        connect()
+    @client '/index.js': ->
+        @connect()
+
         @on post: ->
-            # prepend HTMLed post to list of posts
-            alert (@post.text)
-            $('#posts').prepend(@post.text)
+            post = @data
+            $('#posts').prepend "#{post.text}"
+
 
