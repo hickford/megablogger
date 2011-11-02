@@ -10,7 +10,7 @@ mb = zappa.run port, ->
 
     mongoose = require 'mongoose'
     io = @io
-    mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/mb')  # maybe?
+    mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/megablogger')  # maybe?
     quip = mongoose.model('Post',
         new mongoose.Schema({
             text : String,
@@ -20,7 +20,6 @@ mb = zappa.run port, ->
 
     @get '/': -> 
         scripts = [ '/socket.io/socket.io', '/zappa/jquery', '/zappa/zappa', '/index']
-        #console.log(@query)
         quip.find( {}, {}, {limit:20, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
             @render 'index': {posts, scripts}
         )
@@ -32,7 +31,7 @@ mb = zappa.run port, ->
             post.save()
             console.log post
             io.sockets.emit 'post',post
-        @redirect '/'   
+        @redirect '/'
 
     @view 'posts': ->
         ul id:'posts', ->
@@ -60,5 +59,4 @@ mb = zappa.run port, ->
         @on post: ->
             post = @data
             $('#posts').prepend "#{post.text}"
-
 
