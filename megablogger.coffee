@@ -11,8 +11,7 @@ mb = zappa.run port, ->
         development: => @use errorHandler: {dumpExceptions: on}
         production: => @use 'errorHandler'
 
-    
-    @io.configure('production', =>
+    @io.configure('production', =>          # looks in environment variable NODE_ENV
         @io.set 'transports', ['xhr-polling']
         @io.set 'polling duration', 10
     )
