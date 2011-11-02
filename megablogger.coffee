@@ -6,15 +6,17 @@ mb = zappa.run port, ->
     @enable 'serve jquery'
     @use 'bodyParser'        # for HTTP post 
     @use 'zappa'
-
-    @io.set 'transports', ['xhr-polling']
-    @io.set 'polling duration', 10
-    io = @io
+    
+    @io.configure('production', ->
+        @io.set 'transports', ['xhr-polling']
+        @io.set 'polling duration', 10
+    )
+    io = @io    # make avaliable in handlers
 
     validator = require 'validator'
 
     mongoose = require 'mongoose'
-    mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/megablogger')  # maybe?
+    mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/megablogger')
     quip = mongoose.model('Post',
         new mongoose.Schema({
             text : String,
@@ -33,7 +35,6 @@ mb = zappa.run port, ->
         if text
             post = new quip({text: validator.sanitize(text).entityEncode(), date: new Date})
             post.save()
-            console.log post
             io.sockets.emit 'post',post
         @redirect '/'
 
