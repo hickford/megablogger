@@ -6,10 +6,14 @@ mb = zappa.run port, ->
     @enable 'serve jquery'
     @use 'bodyParser'        # for HTTP post 
     @use 'zappa'
+
+    @io.set 'transports', ['xhr-polling']
+    @io.set 'polling duration', 10
+    io = @io
+
     validator = require 'validator'
 
     mongoose = require 'mongoose'
-    io = @io
     mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/megablogger')  # maybe?
     quip = mongoose.model('Post',
         new mongoose.Schema({
