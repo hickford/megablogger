@@ -6,8 +6,13 @@ mb = zappa.run port, ->
     @enable 'serve jquery'
     @use 'bodyParser'        # for HTTP post 
     @use 'zappa'
+
+    @configure
+        development: => @use errorHandler: {dumpExceptions: on}
+        production: => @use 'errorHandler'
+
     
-    @io.configure('production', ->
+    @io.configure('production', =>
         @io.set 'transports', ['xhr-polling']
         @io.set 'polling duration', 10
     )
