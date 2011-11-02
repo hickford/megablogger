@@ -5,18 +5,14 @@ mb = zappa.run port, ->
     @enable 'default layout'     # html, head, body, etc
     @use 'zappa'
 
-    io = @io
-
     @get '/': -> 
         scripts = [ '/socket.io/socket.io', '/zappa/zappa', '/index']#
-        #io.sockets.emit 'post',{}     # will it crash without emit?
         @render 'index': {scripts}
 
     @view 'index' : ->
         @title = 'socket crash?'
         h1 @title
         p "Stable run locally, crashes when deployed to Heroku"
-
 
     @client '/index.js': ->
         @connect()
