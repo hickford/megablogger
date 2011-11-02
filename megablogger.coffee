@@ -17,7 +17,8 @@ mb = zappa.run port, ->
         h1 @title
         p "Stable run locally, crashes when deployed to Heroku"
 
-    @client '/index.js': ->
-        @connect()
+    # will it crash without connect?
+    #@client '/index.js': ->
+    #    @connect()
 
 
