@@ -9,7 +9,7 @@ mb = zappa.run port, ->
 
     @get '/': -> 
         scripts = [ '/socket.io/socket.io', '/zappa/zappa', '/index']#
-        io.sockets.emit 'post',{}
+        #io.sockets.emit 'post',{}     # will it crash without emit?
         @render 'index': {scripts}
 
     @view 'index' : ->
@@ -17,8 +17,8 @@ mb = zappa.run port, ->
         h1 @title
         p "Stable run locally, crashes when deployed to Heroku"
 
-    # will it crash without connect?
-    #@client '/index.js': ->
-    #    @connect()
+
+    @client '/index.js': ->
+        @connect()
 
 
