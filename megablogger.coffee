@@ -67,6 +67,6 @@ mb = zappa.run port, ->
 
         @on post: ->
             post = @data
-            rendered_post = $('li').text("#{post.text}")
+            rendered_post = $('<li>').text("#{post.text}")
             $('#posts').prepend rendered_post
 
