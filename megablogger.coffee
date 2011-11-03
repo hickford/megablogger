@@ -58,7 +58,7 @@ mb = zappa.run port, ->
 
     @view 'new' : ->
         h2 'New post'
-        form action:'/', method:'post', ->
+        form id:'new', action:'/', method:'post', ->
             input type:'text', name:'text', placeholder:'new post', autofocus:true, required:true
 
     @view 'index' : ->
