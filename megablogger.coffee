@@ -30,9 +30,15 @@ mb = zappa.run port, ->
 
     @get '/': -> 
         scripts = [ '/socket.io/socket.io', '/zappa/jquery', '/zappa/zappa', '/index']
+        stylesheets = ['/index'] 
         quip.find( {}, {}, {limit:20, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
-            @render 'index': {posts, scripts}
+            @render 'index': {posts, scripts, stylesheets}
         )
+
+    @css '/index.css': '''
+        #posts li:nth-last-child(even){background-color:white}
+        #posts li:nth-last-child(odd){background-color:\#eee}
+    '''
 
     @post '/': ->
         text = @body.text
@@ -67,5 +73,6 @@ mb = zappa.run port, ->
 
         @on post: ->
             post = @data
-            rendered_post = $('<li>').text("#{post.text}")      # I want to reuse my CoffeeKup @view :\
+            rendered_post = $('<li>').text("#{post.text}")      # I want to reuse my CoffeeKup @view :/
             rendered_post.prependTo('#posts').hide().slideDown()
+
