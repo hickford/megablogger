@@ -67,5 +67,5 @@ mb = zappa.run port, ->
 
         @on post: ->
             post = @data
-            rendered_post = $('<li>').text("#{post.text}")
+            rendered_post = $('<li>').text("#{post.text}")      # I want to reuse my CoffeeKup @view :\
             rendered_post.prependTo('#posts').hide().slideDown()
