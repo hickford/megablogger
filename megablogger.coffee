@@ -31,7 +31,7 @@ mb = zappa.run port, ->
     @get '/': -> 
         scripts = [ '/socket.io/socket.io', '/zappa/jquery', '/zappa/zappa', '/index']
         stylesheets = ['/index'] 
-        quip.find( {}, {}, {limit:20, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
+        quip.find( {}, {}, {limit:21, sort: {$natural: -1}},(err, posts) =>               # double-arrow for scope           
             @render 'index': {posts, scripts, stylesheets}
         )
 
